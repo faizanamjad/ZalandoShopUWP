@@ -2,7 +2,11 @@
     x:Class="ZalandoShop.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:ZalandoShop"
+    xmlns:viewModels="using:ZalandoShop.ViewModels"
     RequestedTheme="Light">
+
+    <Application.Resources>
+        <viewModels:ViewModelLocator x:Key="ViewModelLocator" />
+    </Application.Resources>
 
 </Application>
