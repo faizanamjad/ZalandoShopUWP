@@ -1,0 +1,57 @@
+﻿<UserControl
+    x:Class="ZalandoShop.UserControls.ArticleUserControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ZalandoShop.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+   >
+    
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WindowStates">
+                <VisualState x:Name="WideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LayoutRoot.Fill" Value="Red" />
+                        <Setter Target="itemPanel.Orientation" Value="Vertical" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="NarrowState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LayoutRoot.Fill" Value="Violet" />
+                        <Setter Target="itemPanel.Orientation" Value="Horizontal" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    
+        <StackPanel x:Name="itemPanel" VerticalAlignment="Top" Margin="8" Orientation="Horizontal">
+            <Rectangle x:Name="LayoutRoot"  Width="120" Height="100"
+                       Margin="10" />
+            <Border BorderThickness="2" BorderBrush="Black" >
+                <StackPanel Margin="20"
+                    
+                    HorizontalAlignment="Center">
+
+                    <TextBlock 
+                   Text="My Name is Name" TextAlignment="Center"
+                   FontSize="16" />
+                   
+                   <TextBlock x:Name="personName" 
+                   Text="{Binding Name}" TextAlignment="Center"
+                   FontSize="16" />
+                   
+                </StackPanel>
+               
+            </Border>
+            
+        </StackPanel>
+    </Grid>
+</UserControl>

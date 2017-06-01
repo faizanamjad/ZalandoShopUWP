@@ -1,4 +1,4 @@
-﻿<Page
+﻿<Page xmlns:UserControls="using:ZalandoShop.UserControls" 
     x:Class="ZalandoShop.Views.ResultPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,33 +11,57 @@
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ZalandoMain}"
     mc:Ignorable="d">
 
-    <interactivity:Interaction.Behaviors>
-        <core:EventTriggerBehavior EventName="Loaded">
-            <core:InvokeCommandAction Command="{Binding Path=LoadResultCommand}" />
-        </core:EventTriggerBehavior>
-    </interactivity:Interaction.Behaviors>
 
-    <Page.Resources>
-        <DataTemplate x:Key="articles">
-            <Grid Background="White" BorderBrush="Black" BorderThickness="1">
-                <StackPanel Orientation="Horizontal">
-                <TextBlock Text="{Binding name}" 
-                           HorizontalAlignment="Center" 
-                           VerticalAlignment="Center" />
-                </StackPanel>
-            </Grid>
-        </DataTemplate>
+    <Grid x:Name="Body" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    </Page.Resources>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock x:Name="tblTitle" HorizontalAlignment="Left" TextWrapping="Wrap" 
-                   Text="Adaptive Grid View Control test" VerticalAlignment="Top" 
-                   FontWeight="Bold" FontSize="24" Width="360" Height="48" />
-        <controls:AdaptiveGridView x:Name="ADGVTest1" 
-                                   ItemHeight="150"
-                                   DesiredWidth="300"
-                                   ItemsSource="{Binding ContentList}"
-                                   ItemTemplate="{StaticResource articles}" />
+        
+        <GridView x:Name="PeopleListView"  
+                  HorizontalAlignment="Left" VerticalAlignment="Top"
+                  ItemsSource="{Binding}">
+            <GridView.ItemTemplate>
+            <DataTemplate>
+                    <UserControls:ArticleUserControl />
+                </DataTemplate>
+            </GridView.ItemTemplate>
+            
+            
+        </GridView>
 
+   
+
+    <VisualStateManager.VisualStateGroups>
+        <VisualStateGroup x:Name="WindowStates">
+            <VisualState x:Name="WideState">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="800" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                        
+                    <!--<Setter Target="PeopleListView.Width" Value="1300" />-->
+                </VisualState.Setters>
+            </VisualState>
+
+                <VisualState x:Name="MidState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <!--<Setter Target="PeopleListView.Background" Value="Azure" />-->
+                        <Setter Target="PeopleListView.Width" Value="800" />
+                    </VisualState.Setters>
+                </VisualState>
+
+
+                <VisualState x:Name="NarrowState">
+                <VisualState.StateTriggers>
+                    <AdaptiveTrigger MinWindowWidth="0" />
+                </VisualState.StateTriggers>
+                <VisualState.Setters>
+                     <!--<Setter Target="PeopleListView.Background" Value="Yellow" />-->
+                    <Setter Target="PeopleListView.Width" Value="350" />
+                </VisualState.Setters>
+            </VisualState>
+        </VisualStateGroup>
+    </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

@@ -16,7 +16,7 @@ using ZalandoShop.Services;
 
 namespace ZalandoShop.ViewModels
 {
-    public class ZalandoViewModel : ViewModelBase
+    public class ZalandoViewModel : ViewModelBase 
     {
         private readonly IZalandoServcie _zalnadoService;
         
@@ -130,5 +130,9 @@ namespace ZalandoShop.ViewModels
         //        return _itemSelectedCommand;
         //    }
         //}
+
+
+
+
     }
 }
