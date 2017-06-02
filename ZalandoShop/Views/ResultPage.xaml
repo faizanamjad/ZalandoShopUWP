@@ -12,12 +12,12 @@
     mc:Ignorable="d">
 
 
+
     <Grid x:Name="Body" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        
-        <GridView x:Name="PeopleListView"  
-                  HorizontalAlignment="Left" VerticalAlignment="Top"
-                  ItemsSource="{Binding}">
+
+        <GridView x:Name="ArticleListView"  
+                  HorizontalAlignment="Left" VerticalAlignment="Top">
             <GridView.ItemTemplate>
             <DataTemplate>
                     <UserControls:ArticleUserControl />
@@ -43,7 +43,7 @@
 
                 <VisualState x:Name="MidState">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="600" />
+                        <AdaptiveTrigger MinWindowWidth="500" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <!--<Setter Target="PeopleListView.Background" Value="Azure" />-->
@@ -52,6 +52,7 @@
                 </VisualState>
 
 
+            
                 <VisualState x:Name="NarrowState">
                 <VisualState.StateTriggers>
                     <AdaptiveTrigger MinWindowWidth="0" />

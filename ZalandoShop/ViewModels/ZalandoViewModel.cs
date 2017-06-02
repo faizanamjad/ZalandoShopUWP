@@ -13,126 +13,204 @@ using Windows.UI.Xaml.Controls;
 using ZalandoShop.Helpers;
 using ZalandoShop.Models;
 using ZalandoShop.Services;
+using System.Threading;
 
 namespace ZalandoShop.ViewModels
 {
-    public class ZalandoViewModel : ViewModelBase 
+    public class ZalandoViewModel : ViewModelBase
     {
         private readonly IZalandoServcie _zalnadoService;
-        
+
         public ZalandoViewModel(IZalandoServcie zalandoService)
         {
             _zalnadoService = zalandoService;
+
+            Gender = "male";
+        }
+      
+    
+        #region Properties
+
+        private string _isProgressBarVisible;
+        public string IsProgressBarVisible
+        {
+            get { return _isProgressBarVisible; }
+            set { Set(ref _isProgressBarVisible, value); }
+        }
+
+        private string _gender;
+        public string Gender
+        {
+            get { return _gender; }
+            set { Set(ref _gender, value); }
         }
 
 
-        private ObservableCollection<Content> _contentList;
+        private string _SearchText;
+        public string SearchText
+        {
+            get { return _SearchText; }
+            set { Set(ref _SearchText, value); }
+        }
 
+
+        private List<string> _itemList;
+        public List<string> ItemList
+        {
+            get { return _itemList; }
+            set { Set(ref _itemList, value); }
+        }
+
+
+        private List<string> _suggestedItemList;
+        public List<string> SuggestedItemList
+        {
+            get { return _suggestedItemList; }
+            set { Set(ref _suggestedItemList, value); }
+        }
+
+
+
+        private ObservableCollection<Content> _contentList;
         public ObservableCollection<Content> ContentList
         {
             get { return _contentList; }
             set { Set(ref _contentList, value); }
         }
 
-        private ObservableCollection<string> _itemList;
 
-        public ObservableCollection<string> ItemList
+        
+        private ObservableCollection<Content> _articleItemList;
+        public ObservableCollection<Content> ArticleItemList
         {
-            get { return _itemList; }
-            set { Set(ref _itemList, value); }
+            get { return _articleItemList; }
+            set { Set(ref _articleItemList, value); }
         }
 
-        //private FeedItem _selectedFeedItem;
+        #endregion Properties
 
-        //public FeedItem SelectedFeedItem
-        //{
-        //    get { return _selectedFeedItem; }
-        //    set { Set(ref _selectedFeedItem, value); }
-        //}
+        #region Commands
+
 
         private RelayCommand _loadCommand;
-
         public RelayCommand LoadCommand
         {
             get
             {
                 if (_loadCommand == null)
                 {
-                    _loadCommand = new RelayCommand(async() =>
+                    _loadCommand = new RelayCommand(async () =>
                     {
                         // Detect if Internet can be reached
                         if (NetworkHelper.Instance.ConnectionInformation.IsInternetAvailable)
                         {
-                            // get all artciles for autocomplete searchbox
-                            var articles = await _zalnadoService.GetArticles("https://api.zalando.com/articles?category=clothing&category=Shoes&gender=male&pageSize=200&");
-                            if (articles.totalElements > 0)
-                            {
-                                List<Content> items = articles.content;
-                                ContentList = new ObservableCollection<Content>(items);
-                                ObservableCollection<string> namelist = new ObservableCollection<string>();
-                                foreach (var item in ContentList)
-                                {
-                                    namelist.Add(item.name);
-                                }
+                            IsProgressBarVisible = "True";
 
-                                ItemList = namelist;
+                            // get all items for autosugegstionBox
+                            List<string> items = await _zalnadoService.GetAutoSuggestItems();
+
+                            if (items != null)
+                            {
+                                ItemList = new List<string>(items);
                             }
                             else
                             {
-                                MessageDialogHelper.AlertMessage("No Record FOund");
+                                MessageDialogHelper.AlertMessage("No Suggested Item  Found.");
                             }
                         }
+
                         else
                         {
                             MessageDialogHelper.AlertMessage("No Internet Connection Available");
                         }
-                       
+
+                        IsProgressBarVisible = "False";
 
                     });
+
+                  
                 }
 
                 return _loadCommand;
             }
         }
 
-        private RelayCommand _loadResultCommand;
-
-
-        public RelayCommand LoadResultCommand
+        private RelayCommand _textChnagedCommand;
+        public RelayCommand TextChangedCommand
         {
             get
             {
-                if (_loadResultCommand == null)
+                if (_textChnagedCommand == null)
                 {
-                    _loadResultCommand = new RelayCommand(() =>
+                    _textChnagedCommand = new RelayCommand(() =>
                     {
-                        ContentList.Count();
-                        //Debug.WriteLine(SelectedFeedItem.Title);
+                        if (ItemList != null)
+                        {
+                            var filtered = ItemList.Where(p => p.StartsWith(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
+                            SuggestedItemList = new List<string>(filtered.Distinct());
+                            
+                        }
+
                     });
                 }
 
-                return _loadResultCommand;
+                return _textChnagedCommand;
             }
         }
 
-        //public RelayCommand ItemSelectedCommand
-        //{
-        //    get
-        //    {
-        //        if (_itemSelectedCommand == null)
-        //        {
-        //            _itemSelectedCommand = new RelayCommand(() =>
-        //            {
-        //                //Debug.WriteLine(SelectedFeedItem.Title);
-        //            });
-        //        }
-
-        //        return _itemSelectedCommand;
-        //    }
-        //}
 
 
+        private RelayCommand _querySubmittedCommand;
+        public RelayCommand QuerySubmittedCommand
+        {
+            get
+            {
+                if (_querySubmittedCommand == null)
+                {
+                    _querySubmittedCommand = new RelayCommand(async () =>
+                    {
+                        // Detect if Internet can be reached
+                        if (NetworkHelper.Instance.ConnectionInformation.IsInternetAvailable)
+                        {
+                            IsProgressBarVisible = "True";
+
+                            if (!string.IsNullOrEmpty(SearchText))
+                            {
+                                // get all artciles 
+                                var articles = await _zalnadoService.GetArticles(SearchText, Gender);
+
+                                if (articles != null)
+                                {
+                                    List<Content> items = articles.content;
+                                    ContentList = new ObservableCollection<Content>(items);
+                                    ArticleSource.ArticeList = new ObservableCollection<Content>(items);
+                                }
+                            }
+                           
+                            else
+                            {
+                                MessageDialogHelper.AlertMessage("please select search item");
+                            }
+                        }
+
+                        else
+                        {
+                            MessageDialogHelper.AlertMessage("No Internet Connection Available");
+                        }
+
+                        IsProgressBarVisible = "False";
+
+                    });
 
 
+                }
+
+                return _querySubmittedCommand;
+            }
+        }
+       
+        #endregion Commands
+
+    
     }
 }

@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
    >
-    
+
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WindowStates">
@@ -20,38 +20,64 @@
                         <Setter Target="itemPanel.Orientation" Value="Vertical" />
                     </VisualState.Setters>
                 </VisualState>
+
+
+                <VisualState x:Name="MidState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="500" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LayoutRoot.Fill" Value="Red" />
+                        <Setter Target="itemPanel.Orientation" Value="Vertical" />
+                    </VisualState.Setters>
+                </VisualState>
+
+
                 <VisualState x:Name="NarrowState">
                     <VisualState.StateTriggers>
                         <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="LayoutRoot.Fill" Value="Violet" />
+                        <Setter Target="LayoutRoot.Fill" Value="#FF0078D7" />
                         <Setter Target="itemPanel.Orientation" Value="Horizontal" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-    
+
         <StackPanel x:Name="itemPanel" VerticalAlignment="Top" Margin="8" Orientation="Horizontal">
-            <Rectangle x:Name="LayoutRoot"  Width="120" Height="100"
+            <Rectangle x:Name="LayoutRoot"  Width="100" Height="100"
                        Margin="10" />
-            <Border BorderThickness="2" BorderBrush="Black" >
-                <StackPanel Margin="20"
-                    
-                    HorizontalAlignment="Center">
+            
+            <Border BorderThickness="1.5"  BorderBrush="Black" >
+                <StackPanel Margin="0,5" Height="80">
 
                     <TextBlock 
-                   Text="My Name is Name" TextAlignment="Center"
-                   FontSize="16" />
-                   
-                   <TextBlock x:Name="personName" 
-                   Text="{Binding Name}" TextAlignment="Center"
-                   FontSize="16" />
-                   
+                   Text="{Binding Name}"  
+                   Width="200" TextWrapping="Wrap" 
+                   FontSize="14" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock 
+                   Text="Size: " TextAlignment="Center"
+                   FontSize="12" />
+
+                        <TextBlock 
+                   Text="{Binding Size}" TextAlignment="Center"
+                   FontSize="12" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock 
+                   Text="{Binding Price}" TextAlignment="Center"
+                   FontSize="12" />
+                    </StackPanel>
+
+
                 </StackPanel>
-               
+
             </Border>
-            
+
         </StackPanel>
     </Grid>
 </UserControl>

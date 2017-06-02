@@ -9,6 +9,8 @@ namespace ZalandoShop.Services
 {
    public interface IZalandoServcie 
     {
-        Task<ArticleRoot> GetArticles(string url);
+        Task<ArticleRoot> GetArticles(string usertext, string usergender);
+
+        Task<List<string>> GetAutoSuggestItems();
     }
 }

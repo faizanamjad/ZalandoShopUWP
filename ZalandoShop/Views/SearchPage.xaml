@@ -10,11 +10,11 @@
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ZalandoMain}"
     mc:Ignorable="d">
 
-    <!--<interactivity:Interaction.Behaviors>
+    <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding Path=LoadCommand}" />
         </core:EventTriggerBehavior>
-    </interactivity:Interaction.Behaviors>-->
+    </interactivity:Interaction.Behaviors>
 
     <Grid x:Name="MainGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
@@ -23,54 +23,60 @@
             <ColumnDefinition Width="10*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30*"/>
             <RowDefinition Height="40*"/>
-            <RowDefinition Height="10*"/>
-            <RowDefinition Height="519*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="490*"/>
         </Grid.RowDefinitions>
 
         <ProgressBar x:Name="progressbar" 
-         Visibility="Collapsed"
-         IsIndeterminate="True" 
+         Visibility="Visible"
+         IsIndeterminate="{Binding IsProgressBarVisible, UpdateSourceTrigger=PropertyChanged}" 
          HorizontalAlignment="Center" 
          VerticalAlignment="Center" 
          Height="20"  
          Width="300" Grid.Row="0" Grid.Column="1" />
 
-        <TextBlock x:Name="statusTextBlock" HorizontalAlignment="Stretch"  
-         Grid.Row="0"
-         TextWrapping="Wrap" Text="Find Items" 
-         VerticalAlignment="Center" 
-         Width="300" Height="30" Style="{StaticResource TitleTextBlockStyle}" Grid.Column="1"   />
-
-
-        <AutoSuggestBox x:Name="articlesAutoSuggestBox" ItemsSource="{Binding ItemList}"
-         QueryIcon="Find" PlaceholderText="Enter Item Name" 
+        <TextBlock x:Name="statusTextBlock" 
          HorizontalAlignment="Stretch"  
-         VerticalAlignment="Stretch"  Grid.Row="1" Grid.Column="1"  >
+         Grid.Row="0"
+         TextWrapping="Wrap" Text="Search Items by Names" 
+         VerticalAlignment="Center" Height="30" Style="{StaticResource TitleTextBlockStyle}" 
+          Grid.Column="1"    />
 
+
+        <AutoSuggestBox x:Name="articlesAutoSuggestBox"  
+         ItemsSource="{Binding SuggestedItemList,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+         QueryIcon="Find" PlaceholderText="Enter Item Name" 
+         Text="{Binding SearchText ,UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
+         HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" 
+          Grid.Row="1" Grid.Column="1"  >
+
+            
             <interactivity:Interaction.Behaviors>
                 <core:EventTriggerBehavior EventName="TextChanged">
-                    <core:InvokeCommandAction Command="{Binding Path=LoadCommand}" />
+                    <core:InvokeCommandAction Command="{Binding Path=TextChangedCommand}" />
                 </core:EventTriggerBehavior>
 
-                <!--<core:EventTriggerBehavior EventName="TextChanged">
-                    <core:InvokeCommandAction Command="{Binding Path=LoadCommand}" />
-                </core:EventTriggerBehavior>-->
+                <core:EventTriggerBehavior EventName="QuerySubmitted">
+                    <core:InvokeCommandAction Command="{Binding Path=QuerySubmittedCommand}" />
+                </core:EventTriggerBehavior>
             </interactivity:Interaction.Behaviors>
-            
-            
-
         </AutoSuggestBox>
 
+        <Grid Grid.Row="2" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center">
+                <RadioButton GroupName="gender" IsChecked="True" Content="MEN"></RadioButton>
+                <RadioButton GroupName="gender" Content="WOMEN"></RadioButton>
+            </StackPanel>
+        </Grid>
+
         <Grid Grid.Row="3" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
-            <Button x:Name="btnSearch" Content="Search" MinWidth="340"
-                    HorizontalAlignment="Center" Margin="0,0,0,10"  
+            <Button x:Name="btnSearch" Content="Search" MinWidth="300"
+                    HorizontalAlignment="Stretch" Margin="0,0,0,10"  
                     VerticalAlignment="Bottom" Click="btnSearch_Click"/>
-
-
-
-
         </Grid>
     </Grid>
 </Page>
