@@ -31,7 +31,7 @@ namespace ZalandoShop.Views
             this.InitializeComponent();
 
             var collection = new IncrementalLoadingCollection<ArticleSource, Content>();
-            ArticleListView.ItemsSource = collection;
+            ArticleGridView.ItemsSource = collection;
         }
 
 

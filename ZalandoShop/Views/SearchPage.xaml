@@ -8,8 +8,13 @@
     xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
     xmlns:core="using:Microsoft.Xaml.Interactions.Core"
     DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ZalandoMain}"
+    xmlns:converters="using:ZalandoShop.Helpers"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <converters:EnumToBoolConverter x:Key="ETBConverter"/>
+    </Page.Resources>
+    
     <interactivity:Interaction.Behaviors>
         <core:EventTriggerBehavior EventName="Loaded">
             <core:InvokeCommandAction Command="{Binding Path=LoadCommand}" />
@@ -26,10 +31,10 @@
             <RowDefinition Height="40*"/>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="40*"/>
-            <RowDefinition Height="490*"/>
+            <RowDefinition Height="450*"/>
         </Grid.RowDefinitions>
 
-        <ProgressBar x:Name="progressbar" 
+        <ProgressBar
          Visibility="Visible"
          IsIndeterminate="{Binding IsProgressBarVisible, UpdateSourceTrigger=PropertyChanged}" 
          HorizontalAlignment="Center" 
@@ -37,11 +42,11 @@
          Height="20"  
          Width="300" Grid.Row="0" Grid.Column="1" Background="{x:Null}" />
 
-        <TextBlock x:Name="statusTextBlock" 
+        <TextBlock 
          HorizontalAlignment="Stretch"  
          Grid.Row="0"
-         TextWrapping="Wrap" Text="Search Items by Names" 
-         VerticalAlignment="Center" Height="30" Style="{StaticResource TitleTextBlockStyle}" 
+         TextWrapping="Wrap" Text="Zalando Shopping" 
+         VerticalAlignment="Center"  Style="{StaticResource TitleTextBlockStyle}" 
           Grid.Column="1"    />
 
 
@@ -68,15 +73,20 @@
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center">
-                <RadioButton GroupName="gender" IsChecked="True" Content="MEN"></RadioButton>
-                <RadioButton GroupName="gender" Content="WOMEN"></RadioButton>
+                <RadioButton IsChecked="{Binding Path=SelectedGender,Converter={StaticResource ETBConverter},ConverterParameter=male, Mode=TwoWay}"
+                             Content="MEN"></RadioButton>
+                <RadioButton 
+                    IsChecked="{Binding Path=SelectedGender,Converter={StaticResource ETBConverter},ConverterParameter=female, Mode=TwoWay}"
+                    Content="WOMEN"></RadioButton>
             </StackPanel>
         </Grid>
 
         <Grid Grid.Row="3" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" >
             <Button x:Name="btnSearch" Content="Search" MinWidth="300"
+                    Command="{Binding SearchCommand}"
+                    Background="#FF0078D7"
                     HorizontalAlignment="Stretch" Margin="0,0,0,10"  
-                    VerticalAlignment="Bottom" Click="btnSearch_Click"/>
+                    VerticalAlignment="Bottom" />
         </Grid>
     </Grid>
 </Page>

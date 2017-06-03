@@ -5,9 +5,8 @@
     xmlns:local="using:ZalandoShop.UserControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-   >
-
+    mc:Ignorable="d">
+    
     <Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="WindowStates">
@@ -16,7 +15,6 @@
                         <AdaptiveTrigger MinWindowWidth="800" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="LayoutRoot.Fill" Value="Red" />
                         <Setter Target="itemPanel.Orientation" Value="Vertical" />
                     </VisualState.Setters>
                 </VisualState>
@@ -27,7 +25,6 @@
                         <AdaptiveTrigger MinWindowWidth="500" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="LayoutRoot.Fill" Value="Red" />
                         <Setter Target="itemPanel.Orientation" Value="Vertical" />
                     </VisualState.Setters>
                 </VisualState>
@@ -38,7 +35,6 @@
                         <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="LayoutRoot.Fill" Value="#FF0078D7" />
                         <Setter Target="itemPanel.Orientation" Value="Horizontal" />
                     </VisualState.Setters>
                 </VisualState>
@@ -46,13 +42,13 @@
         </VisualStateManager.VisualStateGroups>
 
         <StackPanel x:Name="itemPanel" VerticalAlignment="Top" Margin="8" Orientation="Horizontal">
-            <Rectangle x:Name="LayoutRoot"  Width="100" Height="100"
+            <Image Source="{Binding ImageUrl}"   Width="100" Height="100"
                        Margin="10" />
             
             <Border BorderThickness="1.5"  BorderBrush="Black" >
-                <StackPanel Margin="0,5" Height="80">
+                <StackPanel Margin="3,3" Height="80">
 
-                    <TextBlock 
+                    <TextBlock FontWeight="Bold" 
                    Text="{Binding Name}"  
                    Width="200" TextWrapping="Wrap" 
                    FontSize="14" />

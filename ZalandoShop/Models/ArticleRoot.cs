@@ -36,16 +36,37 @@ namespace ZalandoShop.Models
         public Price price { get; set; }
     }
 
+    public class Image
+    {
+        public int orderNumber { get; set; }
+        public string type { get; set; }
+        public string thumbnailHdUrl { get; set; }
+        public string smallUrl { get; set; }
+        public string smallHdUrl { get; set; }
+        public string mediumUrl { get; set; }
+        public string mediumHdUrl { get; set; }
+        public string largeUrl { get; set; }
+        public string largeHdUrl { get; set; }
+    }
+
+    public class Media
+    {
+        public List<Image> images { get; set; }
+    }
+
     public class Content
     {
         public string id { get; set; }
         public string name { get; set; }
         public Brand brand { get; set; }
         public List<Unit> units { get; set; }
+        public Media media { get; set; }
 
         public string Name { get; set; }
         public string Size { get; set; }
         public string Price { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 
    

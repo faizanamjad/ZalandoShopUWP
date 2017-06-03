@@ -23,7 +23,9 @@ namespace ZalandoShop.Models
                 var articleItem = new Content {
                     Name = item.name,
                     Size = item.units.FirstOrDefault().size,
-                    Price = item.units.FirstOrDefault().price.formatted
+                    Price = item.units.FirstOrDefault().price.formatted,
+                    ImageUrl = item.media.images.FirstOrDefault().smallUrl
+                    
                 };
                 _articlelist.Add(articleItem);
             }

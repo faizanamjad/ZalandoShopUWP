@@ -95,6 +95,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\EnumToBoolConverter.cs" />
+    <Compile Include="Helpers\Genders.cs" />
     <Compile Include="Helpers\MessageDialogHelper.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

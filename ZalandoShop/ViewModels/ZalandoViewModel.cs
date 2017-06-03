@@ -14,21 +14,23 @@ using ZalandoShop.Helpers;
 using ZalandoShop.Models;
 using ZalandoShop.Services;
 using System.Threading;
+using GalaSoft.MvvmLight.Views;
 
 namespace ZalandoShop.ViewModels
 {
     public class ZalandoViewModel : ViewModelBase
     {
         private readonly IZalandoServcie _zalnadoService;
+        private readonly INavigationService _navigationService;
 
-        public ZalandoViewModel(IZalandoServcie zalandoService)
+        public ZalandoViewModel(IZalandoServcie zalandoService, INavigationService navigationService)
         {
+            _navigationService = navigationService;
             _zalnadoService = zalandoService;
 
-            Gender = "male";
         }
-      
-    
+
+
         #region Properties
 
         private string _isProgressBarVisible;
@@ -38,11 +40,11 @@ namespace ZalandoShop.ViewModels
             set { Set(ref _isProgressBarVisible, value); }
         }
 
-        private string _gender;
-        public string Gender
+        private Genders _selectedGender;
+        public Genders SelectedGender
         {
-            get { return _gender; }
-            set { Set(ref _gender, value); }
+            get { return _selectedGender; }
+            set { Set(ref _selectedGender, value); }
         }
 
 
@@ -79,7 +81,7 @@ namespace ZalandoShop.ViewModels
         }
 
 
-        
+
         private ObservableCollection<Content> _articleItemList;
         public ObservableCollection<Content> ArticleItemList
         {
@@ -101,40 +103,16 @@ namespace ZalandoShop.ViewModels
                 {
                     _loadCommand = new RelayCommand(async () =>
                     {
-                        // Detect if Internet can be reached
-                        if (NetworkHelper.Instance.ConnectionInformation.IsInternetAvailable)
-                        {
-                            IsProgressBarVisible = "True";
-
-                            // get all items for autosugegstionBox
-                            List<string> items = await _zalnadoService.GetAutoSuggestItems();
-
-                            if (items != null)
-                            {
-                                ItemList = new List<string>(items);
-                            }
-                            else
-                            {
-                                MessageDialogHelper.AlertMessage("No Suggested Item  Found.");
-                            }
-                        }
-
-                        else
-                        {
-                            MessageDialogHelper.AlertMessage("No Internet Connection Available");
-                        }
-
-                        IsProgressBarVisible = "False";
+                        await GetSuggestItems();
 
                     });
 
-                  
+
                 }
 
                 return _loadCommand;
             }
         }
-
         private RelayCommand _textChnagedCommand;
         public RelayCommand TextChangedCommand
         {
@@ -148,7 +126,7 @@ namespace ZalandoShop.ViewModels
                         {
                             var filtered = ItemList.Where(p => p.StartsWith(SearchText, StringComparison.OrdinalIgnoreCase)).ToList();
                             SuggestedItemList = new List<string>(filtered.Distinct());
-                            
+
                         }
 
                     });
@@ -167,40 +145,10 @@ namespace ZalandoShop.ViewModels
             {
                 if (_querySubmittedCommand == null)
                 {
-                    _querySubmittedCommand = new RelayCommand(async () =>
-                    {
-                        // Detect if Internet can be reached
-                        if (NetworkHelper.Instance.ConnectionInformation.IsInternetAvailable)
-                        {
-                            IsProgressBarVisible = "True";
-
-                            if (!string.IsNullOrEmpty(SearchText))
-                            {
-                                // get all artciles 
-                                var articles = await _zalnadoService.GetArticles(SearchText, Gender);
-
-                                if (articles != null)
-                                {
-                                    List<Content> items = articles.content;
-                                    ContentList = new ObservableCollection<Content>(items);
-                                    ArticleSource.ArticeList = new ObservableCollection<Content>(items);
-                                }
-                            }
-                           
-                            else
-                            {
-                                MessageDialogHelper.AlertMessage("please select search item");
-                            }
-                        }
-
-                        else
-                        {
-                            MessageDialogHelper.AlertMessage("No Internet Connection Available");
-                        }
-
-                        IsProgressBarVisible = "False";
-
-                    });
+                    _querySubmittedCommand = new RelayCommand(() =>
+                   {
+                       // await SearchArtcles();
+                   });
 
 
                 }
@@ -208,9 +156,108 @@ namespace ZalandoShop.ViewModels
                 return _querySubmittedCommand;
             }
         }
-       
+
+
+        private RelayCommand _searchCommand;
+        public RelayCommand SearchCommand
+        {
+            get
+            {
+                if (_searchCommand == null)
+                {
+                    _searchCommand = new RelayCommand(async () =>
+                    {
+                        if (await SearchArtcles())
+                        {
+                            _navigationService.NavigateTo("ResultPage");
+                        }
+                        else
+                        {
+                            MessageDialogHelper.MessageBox("please select search item");
+                        }
+
+                    });
+
+                }
+
+                return _searchCommand;
+            }
+        }
+
         #endregion Commands
 
-    
+        #region Methods
+
+
+        private async Task GetSuggestItems()
+        {
+            // Detect if Internet can be reached
+            if (NetworkHelper.Instance.ConnectionInformation.IsInternetAvailable)
+            {
+                IsProgressBarVisible = "True";
+
+                // get all items for autosugegstionBox
+                List<string> items = await _zalnadoService.GetAutoSuggestItems();
+
+                if (items != null)
+                {
+                    ItemList = new List<string>(items);
+                }
+                else
+                {
+                    MessageDialogHelper.MessageBox("No Suggested Item  Found.");
+                }
+            }
+
+            else
+            {
+                MessageDialogHelper.MessageBox("No Internet Connection Available");
+            }
+
+            IsProgressBarVisible = "False";
+        }
+
+        private async Task<bool> SearchArtcles()
+        {
+            bool result = false;
+            // Detect if Internet can be reached
+            if (NetworkHelper.Instance.ConnectionInformation.IsInternetAvailable)
+            {
+                IsProgressBarVisible = "True";
+
+                if (!string.IsNullOrEmpty(SearchText))
+                {
+                    // get all artciles 
+                    var articles = await _zalnadoService.GetArticles(SearchText, SelectedGender.ToString());
+
+                    if (articles.content != null)
+                    {
+                        List<Content> items = articles.content;
+                        ContentList = new ObservableCollection<Content>(items);
+                        ArticleSource.ArticeList = new ObservableCollection<Content>(items);
+                        result = true;
+                    }
+                    else
+                    {
+                        MessageDialogHelper.MessageBox("No Such Article Found !");
+                    }
+                }
+
+                else
+                {
+                    MessageDialogHelper.MessageBox("please select search item");
+                }
+            }
+
+            else
+            {
+                MessageDialogHelper.MessageBox("No Internet Connection Available");
+            }
+
+            return result;
+            IsProgressBarVisible = "False";
+        }
+
+        #endregion
     }
 }

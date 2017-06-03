@@ -10,10 +10,14 @@ namespace ZalandoShop.Helpers
 {
    public  class MessageDialogHelper
     {
-      async public static void AlertMessage (string message)
+     
+
+        public static async void MessageBox(string message)
         {
-            MessageDialog msg = new MessageDialog(message);
-            await msg.ShowAsync();
+
+            var dialog = new MessageDialog(message.ToString());
+            await dialog.ShowAsync();
+
         }
     }
 }

@@ -27,9 +27,9 @@ namespace ZalandoShop.Services
             }
             else if (usergender == "female")
             {
-                category = "category=women-clothing&category=women-shoes&category=premium-women&category=sports-women&category=women-gift-cards";
+                category = "category=womens-clothing&category=womens-shoes&category=premium-womens&category=sports-womens&category=womens-beauty";
             }
-                string selectedfields = "id,name,brand.key,brand.name,units.id,units.size,units.price.formatted";
+                string selectedfields = "id,name,brand.key,brand.name,units.id,units.size,units.price.formatted,media";
 
             string url = @"https://api.zalando.com/articles?"+category+"&fullText="+ usertext+ "&gender="+ usergender+ "&fields="+selectedfields+"&pageSize=200";
             
